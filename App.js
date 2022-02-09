@@ -8,15 +8,10 @@
 
 import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
-
-import Home from './src/screens/home';
+import AppNavigator from './src/navigation/app-navigator';
 
 const App = () => {
-  return (
-    <SafeAreaView>
-      <Home />
-    </SafeAreaView>
-  );
+  return <AppNavigator />;
 };
 
 const styles = StyleSheet.create({});
