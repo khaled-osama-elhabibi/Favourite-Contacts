@@ -18,6 +18,8 @@ const AddContact = props => {
   const contacts = useSelector(state => state.contactReducers.contacts);
   const favContacts = useSelector(state => state.contactReducers.favContacts);
 
+  const [searchKeyWord, setSearchKeyWord] = useState('');
+  const [displayedContacts, setDisplayedContacts] = useState(contacts);
   const [chosenContactsTemp, setChosenContactsTemp] = useState(favContacts);
 
   const nameTransformIfNeeded = name =>
@@ -39,6 +41,17 @@ const AddContact = props => {
         contact => removedContact.displayName !== contact.displayName,
       ),
     ]);
+  };
+
+  const handleSearchTermChange = val => {
+    setSearchKeyWord(val);
+    setDisplayedContacts(
+      contacts.filter(({displayName}) => {
+        if (displayName.includes(val)) {
+          return true;
+        }
+      }),
+    );
   };
 
   const addChosenContactsTempToFav = () => {
@@ -70,7 +83,11 @@ const AddContact = props => {
         </TouchableOpacity>
       </View>
       <View style={styles.searchBar}>
-        <TextInput style={styles.searchBar__input} />
+        <TextInput
+          value={searchKeyWord}
+          onChangeText={handleSearchTermChange}
+          style={styles.searchBar__input}
+        />
         <Image source={R.images.icon_search} style={styles.searchBar__img} />
       </View>
       {chosenContactsTemp.length == 0 ? null : (
@@ -111,7 +128,7 @@ const AddContact = props => {
       )}
       <View>
         <ContactList
-          contacts={contacts}
+          contacts={displayedContacts}
           onPressOnItem={addContactToChosenContactsTemp}
         />
       </View>
