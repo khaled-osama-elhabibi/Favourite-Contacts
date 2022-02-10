@@ -5,7 +5,9 @@ import Home from '../screens/home';
 import Favourite from '../screens/favourite';
 import {createStackNavigator} from '@react-navigation/stack';
 import AddContact from '../screens/addContact';
-
+import {Text} from 'react-native';
+import TabIcon from '../components/tabIcon';
+import R from '../resources/R';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -21,7 +23,23 @@ const HomeNav = () => {
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Tab.Navigator screenOptions={{headerShown: false}}>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, size}) => {
+            let iconObj = {};
+            switch (route.name) {
+              case 'HomeStack':
+                iconObj = R.images.icon_home;
+                break;
+              case 'Favourite':
+                iconObj = R.images.icon_fav;
+                break;
+            }
+            return <TabIcon iconObj={iconObj} focused={focused} size={size} />;
+          },
+          headerShown: false,
+          tabBarShowLabel: false,
+        })}>
         <Tab.Screen name="HomeStack" component={HomeNav} />
         <Tab.Screen name="Favourite" component={Favourite} />
       </Tab.Navigator>
