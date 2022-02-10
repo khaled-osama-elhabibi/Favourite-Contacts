@@ -9,31 +9,41 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import R from '../../resources/R';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {setFavContacts} from '../../store/actions/contactActions';
+import ContactList from '../../components/contactsList';
 
 const AddContact = props => {
+  const dispatch = useDispatch();
   const contacts = useSelector(state => state.contactReducers.contacts);
-  const [chosenContacts, setChosenContacts] = useState([]);
+  const favContacts = useSelector(state => state.contactReducers.favContacts);
+
+  const [chosenContactsTemp, setChosenContactsTemp] = useState(favContacts);
 
   const nameTransformIfNeeded = name =>
     name.length > 10 ? name.slice(0, 10) + '...' : name;
 
-  const isContactInChosenContacts = newContact =>
-    chosenContacts.filter(
+  const isContactInChosenContactsTemp = newContact =>
+    chosenContactsTemp.filter(
       contact => contact.displayName === newContact.displayName,
     ).length != 0;
 
-  const addContactToChosenContacts = newContact =>
-    !isContactInChosenContacts(newContact)
-      ? setChosenContacts([...chosenContacts, newContact])
+  const addContactToChosenContactsTemp = newContact =>
+    !isContactInChosenContactsTemp(newContact)
+      ? setChosenContactsTemp([...chosenContactsTemp, newContact])
       : null;
 
-  const removeContactFromChosenContacts = removedContact => {
-    setChosenContacts([
-      ...chosenContacts.filter(
+  const removeContactFromChosenContactsTemp = removedContact => {
+    setChosenContactsTemp([
+      ...chosenContactsTemp.filter(
         contact => removedContact.displayName !== contact.displayName,
       ),
     ]);
+  };
+
+  const addChosenContactsTempToFav = () => {
+    dispatch(setFavContacts(chosenContactsTemp));
+    props.navigation.goBack();
   };
   return (
     <View style={styles.screen}>
@@ -50,10 +60,12 @@ const AddContact = props => {
             Add To Favourite
           </Text>
           <Text style={styles.header__mainSection__number}>
-            {chosenContacts?.length}/{contacts?.length}
+            {chosenContactsTemp?.length}/{contacts?.length}
           </Text>
         </View>
-        <TouchableOpacity style={styles.header__btn}>
+        <TouchableOpacity
+          onPress={addChosenContactsTempToFav}
+          style={styles.header__btn}>
           <Text style={styles.header__btn__text}>Next</Text>
         </TouchableOpacity>
       </View>
@@ -61,16 +73,19 @@ const AddContact = props => {
         <TextInput style={styles.searchBar__input} />
         <Image source={R.images.icon_search} style={styles.searchBar__img} />
       </View>
-      {chosenContacts.length == 0 ? null : (
+      {chosenContactsTemp.length == 0 ? null : (
         <View style={styles.chosenContactContainer}>
           <FlatList
-            data={chosenContacts}
+            data={chosenContactsTemp}
             horizontal={true}
             renderItem={({item}) => {
               return (
                 <View style={styles.chosenContact}>
                   <TouchableOpacity
-                    onPress={removeContactFromChosenContacts.bind(this, item)}
+                    onPress={removeContactFromChosenContactsTemp.bind(
+                      this,
+                      item,
+                    )}
                     style={styles.chosenContact__closeIconContainer}>
                     <Image
                       style={styles.chosenContact__closeIcon}
@@ -95,26 +110,9 @@ const AddContact = props => {
         </View>
       )}
       <View>
-        <FlatList
-          data={contacts}
-          renderItem={({item}) => {
-            return (
-              <TouchableOpacity
-                onPress={addContactToChosenContacts.bind(this, item)}
-                style={styles.contact}>
-                <Image
-                  style={styles.contact__image}
-                  source={
-                    item.thumbnailPath === ''
-                      ? R.images.blank_user
-                      : {uri: item.thumbnailPath}
-                  }
-                />
-                <Text style={styles.contact__text}>{item.displayName}</Text>
-              </TouchableOpacity>
-            );
-          }}
-          keyExtractor={contact => contact.displayName}
+        <ContactList
+          contacts={contacts}
+          onPressOnItem={addContactToChosenContactsTemp}
         />
       </View>
     </View>
@@ -220,28 +218,6 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 50,
     borderWidth: 1,
-  },
-
-  contact: {
-    paddingVertical: 15,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#fff',
-  },
-  contact__text: {
-    paddingHorizontal: 20,
-    width: '80%',
-    color: '#FFF',
-    fontSize: 19,
-    fontWeight: '700',
-  },
-  contact__image: {
-    width: 80,
-    height: 80,
-    borderRadius: 50,
   },
 });
 

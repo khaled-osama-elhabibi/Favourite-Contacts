@@ -1,1 +1,2 @@
 export const SET_CONTACTS = 'SET_CONTACTS';
+export const SET_FAV_CONTACTS = 'SET_FAV_CONTACTS';

@@ -4,6 +4,7 @@ import {requestPermissionForAccesssContact} from '../../helper/permissions';
 import Contacts from 'react-native-contacts';
 import {useDispatch, useSelector} from 'react-redux';
 import {setContacts} from '../../store/actions/contactActions';
+import Header from '../../components/screenHeader';
 
 const Home = props => {
   // const [contacts,setContacts] = useState([])
@@ -35,22 +36,27 @@ const Home = props => {
     console.log(contacts);
   }, [contacts]);
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}>
-      <TouchableOpacity
-        style={styles.addBtn}
-        onPress={startAddingContactsToFav}>
-        <Text>Add To Favourite</Text>
-      </TouchableOpacity>
+    <View style={styles.screen}>
+      <Header title="Home" />
+      <View style={{flex: 1}}>
+        <TouchableOpacity
+          style={styles.addBtn}
+          onPress={startAddingContactsToFav}>
+          <Text>Add To Favourite</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    backgroundColor: 'rgb(108, 122, 137)',
+  },
   addBtn: {},
 });
 
