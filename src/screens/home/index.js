@@ -11,10 +11,28 @@ const Home = props => {
   const contacts = useSelector(state => state.contactReducers.contacts);
   const dispatch = useDispatch();
 
+  const transformContactsToSortedContacts = contactsUnsorted => {
+    const contactsSorted = [];
+
+    contactsUnsorted
+      .map(contactObj => contactObj.displayName)
+      .sort()
+      .forEach(contactString => {
+        contactsSorted.push(
+          contactsUnsorted.filter(
+            contact => contact.displayName === contactString,
+          )[0],
+        );
+      });
+
+    return contactsSorted;
+  };
   const saveAllContactsAtStore = () => {
     Contacts.getAll()
-      .then(contacts => {
-        dispatch(setContacts(contacts));
+      .then(contactsUnsorted => {
+        const contactsSorted =
+          transformContactsToSortedContacts(contactsUnsorted);
+        dispatch(setContacts(contactsSorted));
       })
       .catch(e => {
         console.log(e);
@@ -23,7 +41,6 @@ const Home = props => {
 
   const startAddingContactsToFav = async () => {
     const response = await requestPermissionForAccesssContact();
-    console.log(response);
     if (response == 'granted') {
       saveAllContactsAtStore();
       props.navigation.navigate('AddContact');
@@ -32,9 +49,6 @@ const Home = props => {
     }
   };
 
-  useEffect(() => {
-    console.log(contacts);
-  }, [contacts]);
   return (
     <View style={styles.screen}>
       <Header title="Home" />
