@@ -21,13 +21,15 @@ const Favourite = () => {
     <View style={styles.screen}>
       <Header title="Favourite Contacts">
         <View style={styles.header__row}>
-          <TouchableOpacity
-            onPress={removeAllFav}
-            style={styles.header__row__btn}>
-            <Text style={styles.header__row__btn__text}>
-              remove all favourites
-            </Text>
-          </TouchableOpacity>
+          {favContacts.length ? (
+            <TouchableOpacity
+              onPress={removeAllFav}
+              style={styles.header__row__btn}>
+              <Text style={styles.header__row__btn__text}>
+                remove all favourites
+              </Text>
+            </TouchableOpacity>
+          ) : null}
         </View>
       </Header>
 
