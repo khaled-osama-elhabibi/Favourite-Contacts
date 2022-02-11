@@ -5,6 +5,7 @@ import {
   Image,
   Text,
   StyleSheet,
+  View,
 } from 'react-native';
 import R from '../resources/R';
 const ContactList = props => {
@@ -13,19 +14,22 @@ const ContactList = props => {
       data={props.contacts}
       renderItem={({item}) => {
         return (
-          <TouchableOpacity
-            onPress={props.onPressOnItem.bind(this, item)}
-            style={styles.contact}>
-            <Image
-              style={styles.contact__image}
-              source={
-                item.thumbnailPath === ''
-                  ? R.images.blank_user
-                  : {uri: item.thumbnailPath}
-              }
-            />
-            <Text style={styles.contact__text}>{item.displayName}</Text>
-          </TouchableOpacity>
+          <View style={item.disabled ? styles.contactDisabled : null}>
+            <TouchableOpacity
+              disabled={item.disabled}
+              onPress={props.onPressOnItem.bind(this, item)}
+              style={styles.contact}>
+              <Image
+                style={styles.contact__image}
+                source={
+                  item.thumbnailPath === ''
+                    ? R.images.blank_user
+                    : {uri: item.thumbnailPath}
+                }
+              />
+              <Text style={styles.contact__text}>{item.displayName}</Text>
+            </TouchableOpacity>
+          </View>
         );
       }}
       keyExtractor={contact => contact.displayName}
@@ -42,6 +46,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#fff',
+  },
+  contactDisabled: {
+    opacity: 0.4,
   },
   contact__text: {
     paddingHorizontal: 20,

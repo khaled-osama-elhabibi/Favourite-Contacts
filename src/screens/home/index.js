@@ -8,13 +8,17 @@ import Header from '../../components/screenHeader';
 import R from '../../resources/R';
 
 const Home = props => {
-  // const [contacts,setContacts] = useState([])
-  const contacts = useSelector(state => state.contactReducers.contacts);
   const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contactReducers.contacts);
+
+  const transformContactsToContactsWithAddedDisableProp = contacts =>
+    contacts.map(contact => {
+      contact.disabled = false;
+      return contact;
+    });
 
   const transformContactsToSortedContacts = contactsUnsorted => {
     const contactsSorted = [];
-
     contactsUnsorted
       .map(contactObj => contactObj.displayName)
       .sort()
@@ -33,7 +37,9 @@ const Home = props => {
       .then(contactsUnsorted => {
         const contactsSorted =
           transformContactsToSortedContacts(contactsUnsorted);
-        dispatch(setContacts(contactsSorted));
+        const contactsAfterAddedDisableProp =
+          transformContactsToContactsWithAddedDisableProp(contactsSorted);
+        dispatch(setContacts(contactsAfterAddedDisableProp));
       })
       .catch(e => {
         console.log(e);
@@ -43,13 +49,14 @@ const Home = props => {
   const startAddingContactsToFav = async () => {
     const response = await requestPermissionForAccesssContact();
     if (response == 'granted') {
-      saveAllContactsAtStore();
+      // saveAllContactsAtStore();
       props.navigation.navigate('AddContact');
     } else if (response == 'denied') {
       console.log('denied');
     }
   };
 
+  console.log(contacts);
   return (
     <View style={styles.screen}>
       <Header title="Home" />

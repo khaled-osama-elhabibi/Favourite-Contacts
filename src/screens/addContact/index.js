@@ -7,20 +7,19 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import R from '../../resources/R';
 import {useDispatch, useSelector} from 'react-redux';
-import {setFavContacts} from '../../store/actions/contactActions';
+import {setContacts, setFavContacts} from '../../store/actions/contactActions';
 import ContactList from '../../components/contactsList';
 
 const AddContact = props => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contactReducers.contacts);
   const favContacts = useSelector(state => state.contactReducers.favContacts);
-
   const [searchKeyWord, setSearchKeyWord] = useState('');
   const [displayedContacts, setDisplayedContacts] = useState(contacts);
-  const [chosenContactsTemp, setChosenContactsTemp] = useState(favContacts);
+  const [chosenContactsTemp, setChosenContactsTemp] = useState([]);
 
   const nameTransformIfNeeded = name =>
     name.length > 10 ? name.slice(0, 10) + '...' : name;
@@ -54,10 +53,28 @@ const AddContact = props => {
     );
   };
 
+  const disableAddedContactsInContacts = () => {
+    let tempContactsAfterDisable = contacts;
+    chosenContactsTemp.forEach(tempContact => {
+      tempContactsAfterDisable = tempContactsAfterDisable.map(item => {
+        if (item.displayName == tempContact.displayName) {
+          item.disabled = true;
+          return item;
+        } else return item;
+      });
+    });
+    return tempContactsAfterDisable;
+  };
   const addChosenContactsTempToFav = () => {
-    dispatch(setFavContacts(chosenContactsTemp));
+    const tempContactsAfterDisable = disableAddedContactsInContacts();
+    dispatch(setContacts(tempContactsAfterDisable));
+    dispatch(setFavContacts([...favContacts, ...chosenContactsTemp]));
     props.navigation.goBack();
   };
+
+  useEffect(() => {
+    setDisplayedContacts(contacts);
+  }, [contacts]);
   return (
     <View style={styles.screen}>
       <View style={styles.header}>

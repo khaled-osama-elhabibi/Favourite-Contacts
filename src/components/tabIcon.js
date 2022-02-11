@@ -2,8 +2,6 @@ import * as React from 'react';
 import {StyleSheet, Image, View} from 'react-native';
 
 const TabIcon = props => {
-  console.log(props);
-
   return (
     <View>
       <Image
