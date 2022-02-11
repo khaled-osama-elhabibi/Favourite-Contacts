@@ -3,14 +3,20 @@ import {Text, View, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {requestPermissionForAccesssContact} from '../../helper/permissions';
 import Contacts from 'react-native-contacts';
 import {useDispatch, useSelector} from 'react-redux';
-import {setContacts} from '../../store/actions/contactActions';
+import {
+  disableArrayOfContacts,
+  setContacts,
+  setFavContacts,
+} from '../../store/actions/contactActions';
 import Header from '../../components/screenHeader';
 import R from '../../resources/R';
+import LocalDB from '../../helper/asyncStorage';
 
 let initialRender = true;
 const Home = props => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contactReducers.contacts);
+  const favContacts = useSelector(state => state.contactReducers.favContacts);
 
   const transformContactsToContactsWithAddedDisableProp = contacts =>
     contacts.map(contact => {
@@ -41,6 +47,7 @@ const Home = props => {
         const contactsAfterAddedDisableProp =
           transformContactsToContactsWithAddedDisableProp(contactsSorted);
         dispatch(setContacts(contactsAfterAddedDisableProp));
+        dispatch(disableArrayOfContacts(favContacts));
       })
       .catch(e => {
         console.log(e);
@@ -60,7 +67,17 @@ const Home = props => {
     }
   };
 
-  console.log(contacts);
+  // console.log(contacts);
+  const loadfavouriteContactsFromAsyncStorageToApp = () => {
+    LocalDB.get('favourite').then(favouriteContacts => {
+      dispatch(setFavContacts(JSON.parse(favouriteContacts)));
+      // console.log('الله', JSON.parse(favouriteContacts));
+    });
+  };
+
+  useEffect(() => {
+    loadfavouriteContactsFromAsyncStorageToApp();
+  }, []);
   return (
     <View style={styles.screen}>
       <Header title="Home" />

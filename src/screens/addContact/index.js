@@ -12,6 +12,7 @@ import R from '../../resources/R';
 import {useDispatch, useSelector} from 'react-redux';
 import {setContacts, setFavContacts} from '../../store/actions/contactActions';
 import ContactList from '../../components/contactsList';
+import LocalDB from '../../helper/asyncStorage';
 
 const AddContact = props => {
   const dispatch = useDispatch();
@@ -69,6 +70,10 @@ const AddContact = props => {
     const tempContactsAfterDisable = disableAddedContactsInContacts();
     dispatch(setContacts(tempContactsAfterDisable));
     dispatch(setFavContacts([...favContacts, ...chosenContactsTemp]));
+    LocalDB.set(
+      'favourite',
+      JSON.stringify([...favContacts, ...chosenContactsTemp]),
+    );
     props.navigation.goBack();
   };
 

@@ -8,6 +8,7 @@ import AddContact from '../screens/addContact';
 import {Text} from 'react-native';
 import TabIcon from '../components/tabIcon';
 import R from '../resources/R';
+import {useSelector} from 'react-redux';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -21,6 +22,7 @@ const HomeNav = () => {
 };
 
 export default function AppNavigator() {
+  const favContacts = useSelector(state => state.contactReducers.favContacts);
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -41,7 +43,11 @@ export default function AppNavigator() {
           tabBarShowLabel: false,
         })}>
         <Tab.Screen name="HomeStack" component={HomeNav} />
-        <Tab.Screen name="Favourite" component={Favourite} />
+        <Tab.Screen
+          name="Favourite"
+          options={{tabBarBadge: favContacts.length}}
+          component={Favourite}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

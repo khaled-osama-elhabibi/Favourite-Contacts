@@ -12,3 +12,21 @@ export function setFavContacts(favContacts) {
     payload: favContacts,
   };
 }
+export function disableArrayOfContacts(contactsToDisable) {
+  return (dispatch, getState) => {
+    const {contacts} = getState().contactReducers;
+    let contactsAfterDisable = contacts;
+    console.log(contacts, contactsToDisable);
+
+    contactsToDisable.forEach(contactToDisable => {
+      contactsAfterDisable = contactsAfterDisable.map(item => {
+        if (item.displayName == contactToDisable.displayName) {
+          item.disabled = true;
+          return item;
+        } else return item;
+      });
+    });
+    console.log(contactsAfterDisable);
+    dispatch(setContacts(contactsAfterDisable));
+  };
+}
