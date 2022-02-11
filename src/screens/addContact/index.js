@@ -70,6 +70,7 @@ const AddContact = props => {
   useEffect(() => {
     setDisplayedContacts(contacts);
   }, [contacts]);
+  console.log(displayedContacts);
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
@@ -138,7 +139,7 @@ const AddContact = props => {
           />
         </View>
       )}
-      <View>
+      <View style={{flex: 1}}>
         <ContactList
           contacts={displayedContacts}
           onPressOnItem={addContactToChosenContactsTemp}

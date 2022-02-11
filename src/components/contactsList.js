@@ -11,6 +11,7 @@ import R from '../resources/R';
 const ContactList = props => {
   return (
     <FlatList
+      style={styles.contactContainer}
       data={props.contacts}
       renderItem={({item}) => {
         return (
@@ -43,6 +44,9 @@ const ContactList = props => {
 };
 
 const styles = StyleSheet.create({
+  contactContainer: {
+    flex: 1,
+  },
   contact: {
     paddingVertical: 15,
     display: 'flex',
