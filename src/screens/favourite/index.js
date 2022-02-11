@@ -33,7 +33,11 @@ const Favourite = () => {
         </View>
       </Header>
 
-      <ContactList contacts={favContacts} onPressOnItem={() => {}} />
+      <ContactList
+        contacts={favContacts}
+        onPressOnItem={() => {}}
+        neglectDisable={true}
+      />
     </View>
   );
 };

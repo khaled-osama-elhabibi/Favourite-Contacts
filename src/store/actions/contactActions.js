@@ -12,6 +12,7 @@ export function setFavContacts(favContacts) {
     payload: favContacts,
   };
 }
+
 export function disableArrayOfContacts(contactsToDisable) {
   return (dispatch, getState) => {
     const {contacts} = getState().contactReducers;

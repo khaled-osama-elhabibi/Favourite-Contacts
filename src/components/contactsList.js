@@ -14,7 +14,12 @@ const ContactList = props => {
       data={props.contacts}
       renderItem={({item}) => {
         return (
-          <View style={item.disabled ? styles.contactDisabled : null}>
+          <View
+            style={
+              item.disabled && !props.neglectDisable
+                ? styles.contactDisabled
+                : null
+            }>
             <TouchableOpacity
               disabled={item.disabled}
               onPress={props.onPressOnItem.bind(this, item)}
