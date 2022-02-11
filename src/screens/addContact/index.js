@@ -10,7 +10,11 @@ import {
 import React, {useEffect, useState} from 'react';
 import R from '../../resources/R';
 import {useDispatch, useSelector} from 'react-redux';
-import {setContacts, setFavContacts} from '../../store/actions/contactActions';
+import {
+  disableArrayOfContacts,
+  setContacts,
+  setFavContacts,
+} from '../../store/actions/contactActions';
 import ContactList from '../../components/contactsList';
 import LocalDB from '../../helper/asyncStorage';
 
@@ -54,26 +58,13 @@ const AddContact = props => {
     );
   };
 
-  const disableAddedContactsInContacts = () => {
-    let tempContactsAfterDisable = contacts;
-    chosenContactsTemp.forEach(tempContact => {
-      tempContactsAfterDisable = tempContactsAfterDisable.map(item => {
-        if (item.displayName == tempContact.displayName) {
-          item.disabled = true;
-          return item;
-        } else return item;
-      });
-    });
-    return tempContactsAfterDisable;
-  };
   const addChosenContactsTempToFav = () => {
-    const tempContactsAfterDisable = disableAddedContactsInContacts();
-    dispatch(setContacts(tempContactsAfterDisable));
     dispatch(setFavContacts([...favContacts, ...chosenContactsTemp]));
     LocalDB.set(
       'favourite',
       JSON.stringify([...favContacts, ...chosenContactsTemp]),
     );
+    dispatch(disableArrayOfContacts([...favContacts, ...chosenContactsTemp]));
     props.navigation.goBack();
   };
 

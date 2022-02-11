@@ -16,17 +16,22 @@ export function disableArrayOfContacts(contactsToDisable) {
   return (dispatch, getState) => {
     const {contacts} = getState().contactReducers;
     let contactsAfterDisable = contacts;
-    console.log(contacts, contactsToDisable);
-
-    contactsToDisable.forEach(contactToDisable => {
-      contactsAfterDisable = contactsAfterDisable.map(item => {
-        if (item.displayName == contactToDisable.displayName) {
-          item.disabled = true;
-          return item;
-        } else return item;
-      });
+    const contactsStringsToDisable = contactsToDisable.map(
+      contactToDisable => contactToDisable.displayName,
+    );
+    contactsAfterDisable = contactsAfterDisable.map(item => {
+      if (
+        contactsStringsToDisable.find(
+          contactStringToDisable => contactStringToDisable === item.displayName,
+        ) === item.displayName
+      ) {
+        item.disabled = true;
+        return item;
+      } else {
+        item.disabled = false;
+        return item;
+      }
     });
-    console.log(contactsAfterDisable);
     dispatch(setContacts(contactsAfterDisable));
   };
 }

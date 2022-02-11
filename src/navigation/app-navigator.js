@@ -45,7 +45,7 @@ export default function AppNavigator() {
         <Tab.Screen name="HomeStack" component={HomeNav} />
         <Tab.Screen
           name="Favourite"
-          options={{tabBarBadge: favContacts.length}}
+          options={{tabBarBadge: favContacts?.length}}
           component={Favourite}
         />
       </Tab.Navigator>

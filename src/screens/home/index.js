@@ -13,71 +13,64 @@ import R from '../../resources/R';
 import LocalDB from '../../helper/asyncStorage';
 
 let initialRender = true;
+let initialClickAtStartAdding = true;
+
 const Home = props => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contactReducers.contacts);
   const favContacts = useSelector(state => state.contactReducers.favContacts);
 
-  const transformContactsToContactsWithAddedDisableProp = contacts =>
-    contacts.map(contact => {
-      contact.disabled = false;
-      return contact;
-    });
-
-  const transformContactsToSortedContacts = contactsUnsorted => {
-    const contactsSorted = [];
-    contactsUnsorted
-      .map(contactObj => contactObj.displayName)
-      .sort()
-      .forEach(contactString => {
-        contactsSorted.push(
-          contactsUnsorted.filter(
-            contact => contact.displayName === contactString,
-          )[0],
-        );
-      });
-
-    return contactsSorted;
-  };
-  const saveAllContactsAtStore = () => {
-    Contacts.getAll()
-      .then(contactsUnsorted => {
-        const contactsSorted =
-          transformContactsToSortedContacts(contactsUnsorted);
-        const contactsAfterAddedDisableProp =
-          transformContactsToContactsWithAddedDisableProp(contactsSorted);
-        dispatch(setContacts(contactsAfterAddedDisableProp));
-        dispatch(disableArrayOfContacts(favContacts));
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
-
-  const startAddingContactsToFav = async () => {
-    const response = await requestPermissionForAccesssContact();
-    if (response == 'granted') {
-      if (initialRender) {
-        saveAllContactsAtStore();
-        initialRender = false;
-      }
-      props.navigation.navigate('AddContact');
-    } else if (response == 'denied') {
-      console.log('denied');
-    }
-  };
-
-  // console.log(contacts);
   const loadfavouriteContactsFromAsyncStorageToApp = () => {
-    LocalDB.get('favourite').then(favouriteContacts => {
-      dispatch(setFavContacts(JSON.parse(favouriteContacts)));
-      // console.log('الله', JSON.parse(favouriteContacts));
-    });
-  };
+      LocalDB.get('favourite').then(favouriteContacts => {
+        dispatch(setFavContacts(JSON.parse(favouriteContacts) || []));
+      });
+    },
+    transformContactsToSortedContacts = contactsUnsorted => {
+      const contactsSorted = [];
+      contactsUnsorted
+        .map(contactObj => contactObj.displayName)
+        .sort()
+        .forEach(contactString => {
+          contactsSorted.push(
+            contactsUnsorted.filter(
+              contact => contact.displayName === contactString,
+            )[0],
+          );
+        });
+
+      return contactsSorted;
+    },
+    saveAllContactsAtStore = () => {
+      Contacts.getAll()
+        .then(contactsUnsorted => {
+          const contactsSorted =
+            transformContactsToSortedContacts(contactsUnsorted);
+          dispatch(setContacts(contactsSorted));
+          dispatch(disableArrayOfContacts(favContacts));
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    startAddingContactsToFav = async () => {
+      const response = await requestPermissionForAccesssContact();
+      if (response == 'granted') {
+        if (initialClickAtStartAdding) {
+          saveAllContactsAtStore();
+          initialClickAtStartAdding = false;
+        }
+        props.navigation.navigate('AddContact');
+      } else if (response == 'denied') {
+        console.log('denied');
+      }
+    };
 
   useEffect(() => {
-    loadfavouriteContactsFromAsyncStorageToApp();
+    if (initialRender) {
+      loadfavouriteContactsFromAsyncStorageToApp();
+      initialRender = false;
+    }
   }, []);
+  // LocalDB.remove('favourite');
   return (
     <View style={styles.screen}>
       <Header title="Home" />
