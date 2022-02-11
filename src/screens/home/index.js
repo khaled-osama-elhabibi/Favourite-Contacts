@@ -7,6 +7,7 @@ import {setContacts} from '../../store/actions/contactActions';
 import Header from '../../components/screenHeader';
 import R from '../../resources/R';
 
+let initialRender = true;
 const Home = props => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contactReducers.contacts);
@@ -49,7 +50,10 @@ const Home = props => {
   const startAddingContactsToFav = async () => {
     const response = await requestPermissionForAccesssContact();
     if (response == 'granted') {
-      // saveAllContactsAtStore();
+      if (initialRender) {
+        saveAllContactsAtStore();
+        initialRender = false;
+      }
       props.navigation.navigate('AddContact');
     } else if (response == 'denied') {
       console.log('denied');
