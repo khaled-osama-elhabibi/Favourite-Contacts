@@ -5,7 +5,7 @@ import Home from '../screens/home';
 import Favourite from '../screens/favourite';
 import {createStackNavigator} from '@react-navigation/stack';
 import AddContact from '../screens/addContact';
-import {Text} from 'react-native';
+import Register from '../screens/register';
 import TabIcon from '../components/tabIcon';
 import R from '../resources/R';
 import {useSelector} from 'react-redux';
@@ -16,6 +16,7 @@ const HomeNav = () => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Register" component={Register} />
       <Stack.Screen name="AddContact" component={AddContact} />
     </Stack.Navigator>
   );

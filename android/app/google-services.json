@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "713581346280",
+    "project_id": "fav-contacts-f6aa6",
+    "storage_bucket": "fav-contacts-f6aa6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713581346280:android:a60c59ed6a2ea7b17d385d",
+        "android_client_info": {
+          "package_name": "com.favoritecontacts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "713581346280-sa4hbk9cljlvjiumjvovu7i3mmp83i94.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAAYQRL9913DXaioDIhHRbzMByzJ6OgdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "713581346280-sa4hbk9cljlvjiumjvovu7i3mmp83i94.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

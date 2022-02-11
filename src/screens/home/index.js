@@ -9,8 +9,9 @@ import {
   setFavContacts,
 } from '../../store/actions/contactActions';
 import Header from '../../components/screenHeader';
-import R from '../../resources/R';
 import LocalDB from '../../helper/asyncStorage';
+import {setPhoneNumberAtStore} from '../../store/actions/authActions';
+import Btn from '../../components/btn';
 
 let initialRender = true;
 let initialClickAtStartAdding = true;
@@ -18,10 +19,16 @@ let initialClickAtStartAdding = true;
 const Home = props => {
   const dispatch = useDispatch();
   const favContacts = useSelector(state => state.contactReducers.favContacts);
-
+  const phoneNumber = useSelector(state => state.authReducer.phoneNumber);
   const loadfavouriteContactsFromAsyncStorageToApp = () => {
       LocalDB.get('favourite').then(favouriteContacts => {
         dispatch(setFavContacts(JSON.parse(favouriteContacts) || []));
+      });
+    },
+    loadPhoneNumberFromAsyncStorageToApp = () => {
+      LocalDB.get('phoneNumber').then(phoneNumber => {
+        console.log('phoneNumber', JSON.parse(phoneNumber));
+        dispatch(setPhoneNumberAtStore(JSON.parse(phoneNumber) || ''));
       });
     },
     transformContactsToSortedContacts = contactsUnsorted => {
@@ -36,7 +43,6 @@ const Home = props => {
             )[0],
           );
         });
-
       return contactsSorted;
     },
     saveAllContactsAtStore = () => {
@@ -62,24 +68,41 @@ const Home = props => {
       } else if (response == 'denied') {
         console.log('denied');
       }
-    };
-
+    },
+    logOut = () => {
+      dispatch(setPhoneNumberAtStore(''));
+      LocalDB.remove('phoneNumber');
+    },
+    goToRegisterScreen = () => {
+      props.navigation.navigate('Register');
+    },
+    isUserLoggedIn = () => phoneNumber.length !== 0;
   useEffect(() => {
     if (initialRender) {
       loadfavouriteContactsFromAsyncStorageToApp();
+      loadPhoneNumberFromAsyncStorageToApp();
       initialRender = false;
     }
   }, []);
-  // LocalDB.remove('favourite');
+
   return (
     <View style={styles.screen}>
-      <Header title="Home" />
+      <Header title="Home">
+        {isUserLoggedIn() ? (
+          <Text style={{color: '#fff'}}>Hello , {phoneNumber}</Text>
+        ) : null}
+      </Header>
       <View style={styles.screen__mainContent}>
         <TouchableOpacity
           style={styles.addBtn}
           onPress={startAddingContactsToFav}>
           <Text style={styles.addBtn__text}>Add To Favourite</Text>
         </TouchableOpacity>
+        {isUserLoggedIn() ? (
+          <Btn onPress={logOut}>Logout</Btn>
+        ) : (
+          <Btn onPress={goToRegisterScreen}>Register</Btn>
+        )}
       </View>
     </View>
   );
@@ -100,6 +123,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addBtn: {
+    marginVertical: 15,
     borderWidth: 1,
     borderColor: '#fff',
     padding: 10,
