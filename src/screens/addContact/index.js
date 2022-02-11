@@ -12,7 +12,6 @@ import R from '../../resources/R';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   disableArrayOfContacts,
-  setContacts,
   setFavContacts,
 } from '../../store/actions/contactActions';
 import ContactList from '../../components/contactsList';
