@@ -101,7 +101,7 @@ const Home = props => {
         {isUserLoggedIn() ? (
           <Btn onPress={logOut}>Logout</Btn>
         ) : (
-          <Btn onPress={goToRegisterScreen}>Register</Btn>
+          <Btn onPress={goToRegisterScreen}>Sign in</Btn>
         )}
       </View>
     </View>
